@@ -16,7 +16,7 @@ import sys
 
 # Libraries for the backend
 from keithleyDataClass import Keithley2700
-from utilities import getAFilesPath, getAFilesPathToSave  # Some usefull small functions for a best user's experience
+from utilities import getAFilesPath, getAFilesPathToSave  # Some usefull small functions for a better user experience
 
 
 # Classes definition
@@ -87,7 +87,7 @@ class SensorsDialog(QDialog):
         # Frtd : PT100 sensors for thermocouples reference
         # Tc : Thermocouples
         # Volt : Any other sensor providing a voltage value as an indirect measure
-        self.sensors = {"Frtd":{}, "Tc":{}, "Volt":{}}
+        self.sensors = {"Frtd": {}, "Tc": {}, "Volt": {}}
         
         # Tabs settings
         self.tab_frtd = QWidget()
@@ -109,7 +109,7 @@ class SensorsDialog(QDialog):
         layout.addWidget(self.tabs)
         self.setLayout(layout)
         
-    def setup_tab(self,tab,sensor_type:str):
+    def setup_tab(self, tab, sensor_type: str):
         """Create and specify a form layout for sensors tabs"""
 
         self.layout = QFormLayout()  # Instanciate a form layout widget
@@ -130,7 +130,7 @@ class SensorsDialog(QDialog):
     
                 # Add fields to the form
                 self.layout.addRow("Mode:", self.sensors["Frtd"]["mode"])
-                self.layout.addRow("Transducer:",self.sensors["Frtd"]["transducer"])
+                self.layout.addRow("Transducer:", self.sensors["Frtd"]["transducer"])
                 self.layout.addRow("Type:", self.sensors["Frtd"]["type"])
                 self.layout.addRow("Resolution:", self.sensors["Frtd"]["resolution"])
                 self.layout.addRow("NPLC:", self.sensors["Frtd"]["nplc"])
@@ -175,8 +175,8 @@ class SensorsDialog(QDialog):
     def get_data(self):
         """Get GUI's info in dictionaries"""
         
-        for key_sensors in self.sensors :
-            for key_sensor in self.sensors[key_sensors] : 
+        for key_sensors in self.sensors:
+            for key_sensor in self.sensors[key_sensors]:
                 self.sensors[key_sensors][key_sensor] = self.sensors[key_sensors][key_sensor].text()
         return self.sensors
 
@@ -247,15 +247,15 @@ class MainWindow(QMainWindow):
         
         # Card information - prefilled information for my application, editable
         card_nb = str(self.tabs.count() + 1)
-        if self.tabs.count() + 1 < 10 : 
-            card_nb = ''.join(('0',card_nb))
+        if self.tabs.count() + 1 < 10:
+            card_nb = ''.join(('0', card_nb))
         tab.card_name_label = QLabel("Card name (e.g : MODULE01)")
         tab.card_name = QLineEdit(self)
         tab.number_label = QLabel("Card number (e.g : 7706)")
         tab.number = QLineEdit(self)
-        if self.tabs.count() + 1 == 1 : 
+        if self.tabs.count() + 1 == 1:
             tab.number.setText("7706")
-        if self.tabs.count() + 1 == 2 : 
+        if self.tabs.count() + 1 == 2:
             tab.number.setText("7702")
         tab.card_name.setText("MODULE" + card_nb)
         if card_nb == '1':
@@ -264,22 +264,21 @@ class MainWindow(QMainWindow):
             tab.number.setText("7702")
         tab.info_label = QLabel("Info")
         tab.info = QLineEdit(self)
-        if self.tabs.count() + 1 >= 5 :
+        if self.tabs.count() + 1 >= 5:
             tab.lab_pic = QLabel(self)
             tab.logo = QPixmap("logo.png")
             tab.lab_pic.setPixmap(tab.logo)
             tab.lab_pic.resize(tab.logo.width(), tab.logo.height())
 
-
         # Add widget to the layout
-        layout.addWidget(tab.number_label, 0,0)    
-        layout.addWidget(tab.number, 0,1)
+        layout.addWidget(tab.number_label, 0, 0)
+        layout.addWidget(tab.number, 0, 1)
         if self.tabs.count() + 1 >= 5:
-            layout.addWidget(tab.lab_pic, 0,2,2,1, alignment=Qt.AlignCenter)
-        layout.addWidget(tab.card_name_label, 1,0)
-        layout.addWidget(tab.card_name,1,1)
-        layout.addWidget(tab.info_label, 2,0)
-        layout.addWidget(tab.info,2,1)
+            layout.addWidget(tab.lab_pic, 0, 2, 2, 1, alignment=Qt.AlignCenter)
+        layout.addWidget(tab.card_name_label, 1, 0)
+        layout.addWidget(tab.card_name, 1, 1)
+        layout.addWidget(tab.info_label, 2, 0)
+        layout.addWidget(tab.info, 2, 1)
 
         # FRTD checkbox design
         title_Frtd = QLabel("FRTD")
@@ -394,9 +393,9 @@ class MainWindow(QMainWindow):
         for tab_index in range(self.tabs.count()):
             tab = self.tabs.widget(tab_index)
             layout = tab.layout()
-            self.data_settings["Card n°" + str(tab_index + 1)]["settings"] = {"name" : tab.card_name.text(),
-                                                                              "number" : tab.number.text(),
-                                                                              "info" : tab.info.text()}
+            self.data_settings["Card n°" + str(tab_index + 1)]["settings"] = {"name": tab.card_name.text(),
+                                                                              "number": tab.number.text(),
+                                                                              "info": tab.info.text()}
             # Loop over each tab widget
             for i in range(layout.count()):
                 widget = layout.itemAt(i).widget()
@@ -417,15 +416,15 @@ class MainWindow(QMainWindow):
         # Check if user input allow a working toml config toml file
         # If some thermocouples are registered, check if a FRTD is registered too
         for card in self.data_settings:
-            if len(self.data_settings[card]["Tc"])>0 and len(self.data_settings[card]["Frtd"])==0 :
+            if len(self.data_settings[card]["Tc"]) > 0 and len(self.data_settings[card]["Frtd"]) == 0:
                 print(card + " : Des thermocouples sont renseignés sans Frtd")
                 
-        # Check if theres no sensors attributed to a same channel
+        # Check if there's no sensors attributed to a same channel
             LFrtd = self.data_settings[card]["Frtd"]
             LTc = self.data_settings[card]["Tc"]
             LVolt = self.data_settings[card]["Volt"]
             
-            for e in LFrtd :
+            for e in LFrtd:
                 if e in LTc:
                     print(card + " : Le canal "
                           + e + " est assigné à un frtd et à au moins un thermocouple.")
@@ -443,11 +442,11 @@ class MainWindow(QMainWindow):
         """Generate the toml file"""
         
         # Try / except combination to allow the user to use standard Keithlkey info
-        try : 
-            self.INSTRUMENT01 = Keithley2700(name = "INSTRUMENT01",
-                                             title = self.keithley_settings['title'],
-                                             rsrc_name_example = self.keithley_settings["rsrc_name_example"],
-                                             rsrc_name = self.keithley_settings["rsrc_name"],
+        try:
+            self.INSTRUMENT01 = Keithley2700(name="INSTRUMENT01",
+                                             title=self.keithley_settings['title'],
+                                             rsrc_name_example=self.keithley_settings["rsrc_name_example"],
+                                             rsrc_name=self.keithley_settings["rsrc_name"],
                                              model_name=self.keithley_settings["model_name"],
                                              panel=self.keithley_settings["panel"],
                                              termination_character=self.keithley_settings["termination_character"],
@@ -461,32 +460,32 @@ class MainWindow(QMainWindow):
                 model_name="2701",
                 panel="rear",
                 termination_character="Keithley must be set to LF",
-                sensors_settings = {'Frtd': {'mode': 'temp',
-                                             'transducer': 'frtd',
-                                             'type': 'pt100',
-                                             'resolution': '6',
-                                             'nplc': '5'},
-                                    'Tc': {'mode': 'temp',
-                                           'transducer': 'tc',
-                                           'type': 'K',
-                                           'ref_junc': 'ext',
+                sensors_settings={'Frtd': {'mode': 'temp',
+                                           'transducer': 'frtd',
+                                           'type': 'pt100',
                                            'resolution': '6',
                                            'nplc': '5'},
-                                    'Volt': {'mode': 'Volt:dc'}})
+                                  'Tc': {'mode': 'temp',
+                                         'transducer': 'tc',
+                                         'type': 'K',
+                                         'ref_junc': 'ext',
+                                         'resolution': '6',
+                                         'nplc': '5'},
+                                  'Volt': {'mode': 'Volt:dc'}})
 
         # Add every card registered by the user in the object instrument
-        for i in range(0,self.nb_cards):
+        for i in range(0, self.nb_cards):
             self.INSTRUMENT01.add_module(name=self.data_settings["Card n°" + str(i + 1)]["settings"]["name"],
                                          number=self.data_settings["Card n°" + str(i + 1)]["settings"]["number"],
                                          info=self.data_settings["Card n°" + str(i + 1)]["settings"]["info"])
             # For each card, get the sensors info
-            for channel in self.data_settings["Card n°" + str(i + 1)]["Frtd"] : 
+            for channel in self.data_settings["Card n°" + str(i + 1)]["Frtd"]:
                 self.INSTRUMENT01.modules[-1].config_channel(nb_channel=channel, sensor="frtd")
             
-            for channel in self.data_settings["Card n°" + str(i + 1)]["Tc"] : 
+            for channel in self.data_settings["Card n°" + str(i + 1)]["Tc"]:
                 self.INSTRUMENT01.modules[-1].config_channel(nb_channel=channel, sensor="tc")
                 
-            for channel in self.data_settings["Card n°" + str(i + 1)]["Volt"] : 
+            for channel in self.data_settings["Card n°" + str(i + 1)]["Volt"]:
                 self.INSTRUMENT01.modules[-1].config_channel(nb_channel=channel, sensor="Volt")
                 
         # Write the toml file

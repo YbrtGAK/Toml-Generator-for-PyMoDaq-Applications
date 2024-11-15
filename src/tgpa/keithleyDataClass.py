@@ -13,7 +13,7 @@ class Channel:
 
     """Channel data object"""
 
-    def __init__(self,number:str, mode:str, transducer=None, type=None, ref_junc = None, resolution=None, nplc=None):
+    def __init__(self, number: str, mode: str, transducer=None, type=None, ref_junc=None, resolution=None, nplc=None):
         self.number = number
         self.mode = mode
         self.transducer = transducer
@@ -27,7 +27,7 @@ class ModuleKeithley:
 
     """Module data object"""
 
-    def __init__(self, name: str, number:str,info: str, sensors_settings : dict):
+    def __init__(self, name: str, number: str, info: str, sensors_settings: dict):
         self.name = name  # Module name
         self.number = number  # Card number
         self.info = info  # Module info
@@ -40,20 +40,24 @@ class ModuleKeithley:
 
         match sensor:
             case "frtd":
-                self.channels.append(Channel(nb_channel,self.sensors_settings['Frtd']['mode'], self.sensors_settings['Frtd']['transducer'],
-                                             self.sensors_settings['Frtd']['type'], resolution=int(self.sensors_settings['Frtd']['resolution']),
+                self.channels.append(Channel(nb_channel, self.sensors_settings['Frtd']['mode'],
+                                             self.sensors_settings['Frtd']['transducer'],
+                                             self.sensors_settings['Frtd']['type'],
+                                             resolution=int(self.sensors_settings['Frtd']['resolution']),
                                              nplc=int(self.sensors_settings['Frtd']['nplc'])))
                 self.__setattr__("c" + nb_channel, self.channels[-1])
 
             case "tc":
-                self.channels.append(Channel(nb_channel,self.sensors_settings['Tc']['mode'], self.sensors_settings['Tc']['transducer'],
-                                             self.sensors_settings['Tc']['type'], ref_junc = self.sensors_settings['Tc']['ref_junc'],
+                self.channels.append(Channel(nb_channel, self.sensors_settings['Tc']['mode'],
+                                             self.sensors_settings['Tc']['transducer'],
+                                             self.sensors_settings['Tc']['type'],
+                                             ref_junc=self.sensors_settings['Tc']['ref_junc'],
                                              resolution=int(self.sensors_settings['Tc']['resolution'])))
                                              
                 self.__setattr__("c" + nb_channel, self.channels[-1])
 
             case "Volt":
-                self.channels.append(Channel(nb_channel,self.sensors_settings['Volt']['mode']))
+                self.channels.append(Channel(nb_channel, self.sensors_settings['Volt']['mode']))
                 self.__setattr__("c" + nb_channel, self.channels[-1])
 
     def config_all_channels(self, Lfrtd:list, Ltc:list, LVolt:list):
@@ -93,7 +97,7 @@ class Keithley2700:
         """Add a module to the object Keithley"""
 
         self.modules.append(ModuleKeithley(name, number, info, self.sensors_settings))  # Get the new module in a list
-        self.__setattr__(name, self.modules[-1])  # Give the module as a attribute to the Keithley
+        self.__setattr__(name, self.modules[-1])  # Give the module as an attribute to the Keithley
 
     def write_tolm(self, output_path):
 
@@ -152,13 +156,13 @@ nplc = \"{chan.nplc}\"
 mode = \"{chan.mode}\"
 """
         self.tolm = toml.loads(self.tolm)
-        with open(output_path,"w") as f:
-            toml.dump(self.tolm,f)
+        with open(output_path, "w") as f:
+            toml.dump(self.tolm, f)
         print("Your tolm file has been successfully generated")
 
 
 if __name__ == "__main__":
-    INSTRUMENT01 = Keithley2700(name = "INSTRUMENT01",
+    INSTRUMENT01 = Keithley2700(name="INSTRUMENT01",
                                 title="Instrument in wich is plugged the switching module used for data acquisition",
                                 rsrc_name_example=["ASRL1::INSTR", "TCPIP::192.168.01.01::1394::SOCKET"],
                                 rsrc_name="ASRL7::INSTR",
@@ -199,21 +203,18 @@ if __name__ == "__main__":
 #        INSTRUMENT01.MODULE01.config_channel(nb_channel=channel,sensor="frtd")
 
     for channel in Lfrtd2:
-        INSTRUMENT01.MODULE02.config_channel(nb_channel=channel,sensor="frtd")
+        INSTRUMENT01.MODULE02.config_channel(nb_channel=channel, sensor="frtd")
 
 #    for channel in Ltc1:
 #        INSTRUMENT01.MODULE01.config_channel(nb_channel=channel,sensor="tc")"""
 
     for channel in Ltc2:
-        INSTRUMENT01.MODULE02.config_channel(nb_channel=channel,sensor="tc")
+        INSTRUMENT01.MODULE02.config_channel(nb_channel=channel, sensor="tc")
 
 #    for channel in LVolt1:
 #        INSTRUMENT01.MODULE01.config_channel(nb_channel=channel,sensor="Voltage")"""
 
     for channel in LVolt2:
-        INSTRUMENT01.MODULE02.config_channel(nb_channel=channel,sensor="Volt")
+        INSTRUMENT01.MODULE02.config_channel(nb_channel=channel, sensor="Volt")
 
     INSTRUMENT01.write_tolm("config_keitley_test.tolm")
-
-
-
