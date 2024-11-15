@@ -4,7 +4,7 @@ Date : 31/10/2024
 Purpose : Automatically generate tolm files for keithley in pymodaq
 """
 
-#Imports
+# Imports
 # Libraries for the frontend (PyQt5, sys)
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QWidget, QApplication, QPushButton, \
  QLabel, QGridLayout, QTabWidget, QFrame, QSpacerItem, QSizePolicy, QToolButton, QMainWindow, \
@@ -16,7 +16,8 @@ import sys
 
 # Libraries for the backend
 from keithleyDataClass import Keithley2700
-from utilities import getAFilesPath, getAFilesPathToSave #Some usefull small functions for a best user's experience
+from utilities import getAFilesPath, getAFilesPathToSave  # Some usefull small functions for a best user's experience
+
 
 # Classes definition
 class KeithleyDialog(QDialog):
@@ -71,7 +72,8 @@ class KeithleyDialog(QDialog):
             'panel': self.panel_field.text(),
             'termination_character': self.termination_character_field.text()
         }
-    
+
+
 class SensorsDialog(QDialog):
     """Dialog window to input sensors' parameters"""
     
@@ -87,7 +89,7 @@ class SensorsDialog(QDialog):
         # Volt : Any other sensor providing a voltage value as an indirect measure
         self.sensors = {"Frtd":{}, "Tc":{}, "Volt":{}}
         
-        #Tabs settings
+        # Tabs settings
         self.tab_frtd = QWidget()
         self.tab_tc = QWidget()
         self.tab_volt = QWidget()
@@ -110,11 +112,11 @@ class SensorsDialog(QDialog):
     def setup_tab(self,tab,sensor_type:str):
         """Create and specify a form layout for sensors tabs"""
 
-        self.layout = QFormLayout() # Instanciate a form layout widget
+        self.layout = QFormLayout()  # Instanciate a form layout widget
 
         # Text fields for sensors' parameters
-        match sensor_type: # Design sensor parameters' tab according its type
-            case "Frtd": # for Frtd such as PT100 :
+        match sensor_type:  # Design sensor parameters' tab according its type
+            case "Frtd":  # for Frtd such as PT100 :
                 self.sensors["Frtd"]["mode"] = QLineEdit(self)
                 self.sensors["Frtd"]["mode"].setText("temp")
                 self.sensors["Frtd"]["transducer"] = QLineEdit(self)
@@ -154,15 +156,13 @@ class SensorsDialog(QDialog):
                 self.layout.addRow("Ref_junc:", self.sensors["Tc"]["ref_junc"])
                 self.layout.addRow("Resolution:", self.sensors["Tc"]["resolution"])
                 self.layout.addRow("NPLC:", self.sensors["Tc"]["nplc"])
-                
-                            
+
             case "Volt":
                 self.sensors["Volt"]["mode"] = QLineEdit(self)
                 self.sensors["Volt"]["mode"].setText("Volt:dc")
     
                 # Ajouter les champs au formulaire
                 self.layout.addRow("Mode:", self.sensors["Volt"]["mode"])
-
 
         # Add OK and Cancel buttons
         self.buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
@@ -179,6 +179,7 @@ class SensorsDialog(QDialog):
             for key_sensor in self.sensors[key_sensors] : 
                 self.sensors[key_sensors][key_sensor] = self.sensors[key_sensors][key_sensor].text()
         return self.sensors
+
 
 class MainWindow(QMainWindow):
 
@@ -235,16 +236,16 @@ class MainWindow(QMainWindow):
     def setup_tab(self, tab, keithleyChannelList):
         """Config a tab to set Keithley's channel to the rights sensors"""
 
-        #Design checkboxes
+        # Design checkboxes
         checkboxesFont = self.font()
         checkboxesFont.setBold(True)
         checkboxesFont.setItalic(True)
         checkboxesFont.setPointSize(9)
 
-        #Design layout
+        # Design layout
         layout = QGridLayout()
         
-        #Card information - prefilled information for my application, editable
+        # Card information - prefilled information for my application, editable
         card_nb = str(self.tabs.count() + 1)
         if self.tabs.count() + 1 < 10 : 
             card_nb = ''.join(('0',card_nb))
@@ -270,7 +271,7 @@ class MainWindow(QMainWindow):
             tab.lab_pic.resize(tab.logo.width(), tab.logo.height())
 
 
-        #Add widget to the layout
+        # Add widget to the layout
         layout.addWidget(tab.number_label, 0,0)    
         layout.addWidget(tab.number, 0,1)
         if self.tabs.count() + 1 >= 5:
@@ -289,7 +290,7 @@ class MainWindow(QMainWindow):
         checkBoxListWidget_Frtd.addItems(keithleyChannelList)
         allCheckBoxFrtd.stateChanged.connect(checkBoxListWidget_Frtd.toggleState)
 
-        #Add widgets to the layout
+        # Add widgets to the layout
         layout.addWidget(title_Frtd, 3, 0)
         layout.addWidget(allCheckBoxFrtd, 4, 0)
         layout.addWidget(checkBoxListWidget_Frtd, 5, 0)
@@ -334,7 +335,6 @@ class MainWindow(QMainWindow):
          """) 
         keithley_menu = menubar.addMenu('&Keithley')
 
-    
         # Action to open the configuration window
         keithley_settings_action = QAction('Keithley Settings', self)
         keithley_settings_action.triggered.connect(self.open_keithley_dialog)
@@ -352,7 +352,6 @@ class MainWindow(QMainWindow):
         keithley_menu.addAction(keithley_settings_action)
         keithley_menu.addAction(sensors_settings_action)
 
-
     def open_keithley_dialog(self):
         """Open window dialog to enter the parameters"""
         keithley_dialog = KeithleyDialog(self)
@@ -366,8 +365,7 @@ class MainWindow(QMainWindow):
         if sensors_dialog.exec_() == QDialog.Accepted:
             # Récupérer les données de la boîte de dialogue
             self.sensors_settings = sensors_dialog.get_data()
-            
-            
+
     def add_new_tab(self):
         """Add a new tab"""
         # Count the number of tabs
@@ -388,7 +386,7 @@ class MainWindow(QMainWindow):
     def save_the_list(self):
         """Save checked items in each tab's lists"""
         
-        #Initialization of the dictionary
+        # Initialization of the dictionary
         self.data_settings = {"Card n°" + str(i + 1) : {"Frtd":[],"Tc":[],"Volt":[]} for i in range(self.tabs.count())}
 
         # Loop over the tabs - hence the different cards
@@ -407,7 +405,7 @@ class MainWindow(QMainWindow):
                     # Loop over each checkable item in the box
                     for j in range(widget.count()):
                         item = widget.item(j)
-                        #If the item is checked, append it to the right list in the dictionary
+                        # If the item is checked, append it to the right list in the dictionary
                         if item.checkState() == Qt.Checked:
                             if layout.itemAt(i-2).widget().text() == "FRTD":
                                 self.data_settings["Card n°" + str(tab_index + 1)]["Frtd"].append(item.text())
@@ -416,75 +414,82 @@ class MainWindow(QMainWindow):
                             elif layout.itemAt(i-2).widget().text() == "Volt":
                                 self.data_settings["Card n°" + str(tab_index + 1)]["Volt"].append(item.text())
                                 
-        #Check if user input allow a working toml config toml file
-        #If some thermocouples are registered, check if a FRTD is registered too
+        # Check if user input allow a working toml config toml file
+        # If some thermocouples are registered, check if a FRTD is registered too
         for card in self.data_settings:
             if len(self.data_settings[card]["Tc"])>0 and len(self.data_settings[card]["Frtd"])==0 :
                 print(card + " : Des thermocouples sont renseignés sans Frtd")
                 
-        #Check if theres no sensors attributed to a same channel
+        # Check if theres no sensors attributed to a same channel
             LFrtd = self.data_settings[card]["Frtd"]
             LTc = self.data_settings[card]["Tc"]
             LVolt = self.data_settings[card]["Volt"]
             
             for e in LFrtd :
-                if e in LTc : print(card + " : Le canal " + e + " est assigné à un frtd et à au moins un thermocouple.")
-                if e in LVolt : print(card + " : Le canal " + e + " est assigné à un frtd et à au moins un autre capteur.")
-            for e in LTc : 
-                if e in LVolt :  print(card + " : Le canal " + e + " est assigné à un thermocouple et à au moins à un autre capteur.")
+                if e in LTc:
+                    print(card + " : Le canal "
+                          + e + " est assigné à un frtd et à au moins un thermocouple.")
+                if e in LVolt:
+                    print(card + " : Le canal "
+                          + e + " est assigné à un frtd et à au moins un autre capteur.")
+            for e in LTc:
+                if e in LVolt:
+                    print(card + " : Le canal "
+                          + e + " est assigné à un thermocouple et à au moins à un autre capteur.")
                 
         print('Lists successfully saved :)')
         
     def generate_toml(self):
         """Generate the toml file"""
         
-        #Try / except combination to allow the user to use standard Keithlkey info
+        # Try / except combination to allow the user to use standard Keithlkey info
         try : 
             self.INSTRUMENT01 = Keithley2700(name = "INSTRUMENT01",
-                                      title = self.keithley_settings['title'],
-                                      rsrc_name_example = self.keithley_settings["rsrc_name_example"],
-                                      rsrc_name = self.keithley_settings["rsrc_name"],
-                                      model_name=self.keithley_settings["model_name"],
-                                      panel=self.keithley_settings["panel"],
-                                      termination_character=self.keithley_settings["termination_character"],
-                                      sensors_settings = self.sensors_settings)
+                                             title = self.keithley_settings['title'],
+                                             rsrc_name_example = self.keithley_settings["rsrc_name_example"],
+                                             rsrc_name = self.keithley_settings["rsrc_name"],
+                                             model_name=self.keithley_settings["model_name"],
+                                             panel=self.keithley_settings["panel"],
+                                             termination_character=self.keithley_settings["termination_character"],
+                                             sensors_settings=self.sensors_settings)
         except AttributeError:
-            self.INSTRUMENT01 = Keithley2700(name = "INSTRUMENT01",
-                                      title="Instrument in wich is plugged the switching module used for data acquisition",
-                                      rsrc_name_example=["ASRL1::INSTR", "TCPIP::192.168.01.01::1394::SOCKET"],
-                                      rsrc_name="ASRL7::INSTR",
-                                      model_name="2701",
-                                      panel="rear",
-                                      termination_character="Keithley must be set to LF",
-                                      sensors_settings = {'Frtd': {'mode': 'temp',
-                                        'transducer': 'frtd',
-                                        'type': 'pt100',
-                                        'resolution': '6',
-                                        'nplc': '5'},
-                                       'Tc': {'mode': 'temp',
-                                        'transducer': 'tc',
-                                        'type': 'K',
-                                        'ref_junc': 'ext',
-                                        'resolution': '6',
-                                        'nplc': '5'},
-                                       'Volt': {'mode': 'Volt:dc'}})
+            self.INSTRUMENT01 = Keithley2700(
+                name="INSTRUMENT01",
+                title="Instrument in wich is plugged the switching module used for data acquisition",
+                rsrc_name_example=["ASRL1::INSTR", "TCPIP::192.168.01.01::1394::SOCKET"],
+                rsrc_name="ASRL7::INSTR",
+                model_name="2701",
+                panel="rear",
+                termination_character="Keithley must be set to LF",
+                sensors_settings = {'Frtd': {'mode': 'temp',
+                                             'transducer': 'frtd',
+                                             'type': 'pt100',
+                                             'resolution': '6',
+                                             'nplc': '5'},
+                                    'Tc': {'mode': 'temp',
+                                           'transducer': 'tc',
+                                           'type': 'K',
+                                           'ref_junc': 'ext',
+                                           'resolution': '6',
+                                           'nplc': '5'},
+                                    'Volt': {'mode': 'Volt:dc'}})
 
         # Add every card registered by the user in the object instrument
         for i in range(0,self.nb_cards):
             self.INSTRUMENT01.add_module(name=self.data_settings["Card n°" + str(i + 1)]["settings"]["name"],
                                          number=self.data_settings["Card n°" + str(i + 1)]["settings"]["number"],
-                                    info=self.data_settings["Card n°" + str(i + 1)]["settings"]["info"])
-            #For each card, get the sensors info
+                                         info=self.data_settings["Card n°" + str(i + 1)]["settings"]["info"])
+            # For each card, get the sensors info
             for channel in self.data_settings["Card n°" + str(i + 1)]["Frtd"] : 
-                self.INSTRUMENT01.modules[-1].config_channel(nb_channel=channel,sensor="frtd")
+                self.INSTRUMENT01.modules[-1].config_channel(nb_channel=channel, sensor="frtd")
             
             for channel in self.data_settings["Card n°" + str(i + 1)]["Tc"] : 
-                self.INSTRUMENT01.modules[-1].config_channel(nb_channel=channel,sensor="tc")
+                self.INSTRUMENT01.modules[-1].config_channel(nb_channel=channel, sensor="tc")
                 
             for channel in self.data_settings["Card n°" + str(i + 1)]["Volt"] : 
-                self.INSTRUMENT01.modules[-1].config_channel(nb_channel=channel,sensor="Volt")
+                self.INSTRUMENT01.modules[-1].config_channel(nb_channel=channel, sensor="Volt")
                 
-        #Write the toml file
+        # Write the toml file
         self.INSTRUMENT01.write_tolm(getAFilesPathToSave())
             
 
