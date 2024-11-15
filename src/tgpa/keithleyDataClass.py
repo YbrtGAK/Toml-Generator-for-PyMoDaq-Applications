@@ -58,12 +58,16 @@ class ModuleKeithley:
 
         """Config all the modules channels"""
 
-        if len(Lfrtd) > 0 :
-            for chan in Lfrtd : self.config_channel(nb_channel=chan,sensor="frtd")
-        if len(Ltc) > 0 :
-            for chan in Ltc : self.config_channel(nb_channel=chan,sensor="tc")
-        if len(LVolt) > 0 :
-            for chan in LVolt : self.config_channel(nb_channel=chan,sensor="Volt")
+        [self.config_channel(nb_channel=chan, sensor="frtd")
+         for chan in Lfrtd
+         if len(Lfrtd) > 0]
+        [self.config_channel(nb_channel=chan, sensor="tc")
+         for chan in Ltc
+         if len(Ltc) > 0]
+        [self.config_channel(nb_channel=chan, sensor="Volt")
+         for chan in LVolt
+         if len(LVolt) > 0]
+
 
 class Keithley2700:
 

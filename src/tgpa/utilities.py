@@ -73,6 +73,8 @@ def files_name_to_list(path):
     
     """ Renvoie une liste contenant les noms des fichiers excels des essais de
     Devenir"""
+    # Instancie la liste des noms de fichiers
+    listeFichiers = [fichiers for (files_path, sousRepertoires, fichiers) in walk(path)]
     
     listeFichiers = [] #Instancie la liste des noms de fichiers
     
