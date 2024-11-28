@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tgpa"
+dynamic = ["version"]
+description = 'Toml-Generator-for-PyMoDaq-Applications'
+readme = "README.md"
+requires-python = "<3.12"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Yann BERTON", email = "yann.berton@insa-lyon.fr" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = ['numpy','pandas', 'PyPDF2','toml', 'pyqt5', 'pyqt_checkbox_list_widget', 'h5py', 'openpyxl']
+
+[project.urls]
+Documentation = "https://github.com/YbrtGAK/Toml-Generator-for-PyMoDaq-Applications#readme"
+Issues = "https://github.com/YbrtGAK/Toml-Generator-for-PyMoDaq-Applications/issues"
+Source = "https://github.com/YbrtGAK/Toml-Generator-for-PyMoDaq-Applications"
+
+[tool.hatch.version]
+path = "src/tgpa/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/tgpa tests}"
+
+[tool.coverage.run]
+source_pkgs = ["tgpa", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/tgpa/__about__.py",
+]
+
+[tool.coverage.paths]
+tgpa = ["src/tgpa", "*/tgpa/src/tgpa"]
+tests = ["tests", "*/tgpa/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tgpa"]
